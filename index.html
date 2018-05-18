@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>时光沙漏</title>
+</head>
+<body>
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>拖拽</title>
+    <style>
+        *{ margin: 0; padding:0;}
+        #drag{ width:100px; height:100px; background-color:blue;}
+        #box{ width: 500px; height: 500px; border:3px solid red; margin: 100px auto;}
+    </style>
+</head>
+
+<body>
+    <div id="drag" draggable="true"></div>
+    <div id="box"></div>
+    <script>
+        /*
+            H5拖拽事件
+                被拖拽元素事件（3个）
+                    ondragstart 拖拽开始
+                    ondrag		拖拽中
+                    ondragend	拖拽结束
+                目标元素事件（4个）
+                    ondragenter	进入目标元素
+                    ondragover	在目标元素上移动
+                    ondragleave
+                    ondragover
+        */
+        var oDrag = document.getElementById("drag")
+        var oBox =document.getElementById("box");
+        //被拖拽元素事件
+        oDrag.ondragstart = function(e){
+            this.style.background = "green";
+        }
+        oDrag.ondrag = function(){
+            this.innerHTML = "被拖拽中..."
+        }
+        oDrag.ondragend = function(){
+            this.style.background = "blue";
+            this.innerHTML = ""
+        }
+        //目标元素事件
+        oBox.ondragenter = function(e){
+            e.preventDefault();	//阻止掉浏览器的默认事件
+            this.innerHTML = "我要进来了，你准备好了吗？"
+            this.style.background = "yellow";
+        }
+        oBox.ondragover = function(){
+            e.preventDefault();	//阻止掉浏览器的默认事件
+            this.innerHTML = "嗯，我准备好了！！！"
+            this.style.background = "red";
+        }
+        oBox.ondragleave = function(){
+            this.innerHTML = "怎么走了！！！"
+            this.style.background = "none";
+        }
+        oBox.ondrop = function(){
+            this.innerHTML = "我完了，我要睡觉了！"
+            this.style.background = "none";
+        }
+    </script>
+
+    <script>
+        var oDrag = document.getElementById("drag");
+        oDrag.addEventListener('dragenter',drag,false);		//事件监听
+        oDrag.addEventListener('dragover',drag,false);
+        oDrag.addEventListener('dragleave',drag,false);
+        oDrag.addEventListener('drop',drag,false);
+        function drag(e){
+            e.preventDefault();
+            switch(e.type){
+                case 'dragenter':
+                    this.innerHTML = "请释放鼠标"
+                    break;
+                case 'dragover':
+                    break;
+                case 'dragleave':
+                    this.innerHTML = "请将图片拖拽到此区域"
+                    break;
+                case 'drop':
+                    var aFiles = e.dataTransfer.files;
+    //				for(var i=0;aFiles;aFiles = aFiles[i++]){
+    //					console.log(aFiles)
+    //				}		//for循环优化写法
+                    [].forEach.call(aFiles,function(current,index,arr){
+                        var fileRead = new FileReader();//新建一个文件对象读取文件信息
+                        fileRead.readAsDataURL(current);//
+                        fileRead.addEventListener('load',function(){
+                            var aLi = document.createElement('li');
+                            aLi.innerHTML = '<img src="'+this.result+'"width=1"100%" height="100%">';
+                            oUl.appendChild(aLi);
+                        });
+                    })
+                    break;
+            }
+        }
+    </script>
+
+</body>
+</html>
